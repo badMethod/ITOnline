@@ -14,8 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path, include
+from django.views.generic import TemplateView
+from django.views.static import serve
+
+from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, LinkResetUserView, ResetUserView
+from ITOnline.settings import MEDIA_ROOT
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', TemplateView.as_view(template_name="index.html"), name="index"),
+    path('login/', LoginView.as_view(), name="login"),
+    path('register/', RegisterView.as_view(), name="register"),
+    re_path(r'^captcha/', include('captcha.urls')),
+    re_path(r'^active/(?P<email_code>.*)/$', ActiveUserView.as_view(), name="active_user"),
+    re_path(r'^reset/(?P<email_code>.*)/$', LinkResetUserView.as_view(), name="link_reset_user"),
+    re_path(r'^reset/$', ResetUserView.as_view(), name="reset_user"),
+    path('forgetpwd/', ForgetPwdView.as_view(), name="forgetpwd"),
+    re_path('media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
+
+    path("org/", include(('organization.urls', 'org'), namespace='org')),
+    path("courses/", include(("courses.urls", "courses"), namespace="courses"))
 ]

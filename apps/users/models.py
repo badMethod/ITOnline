@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
+
 class UserProfile(AbstractUser):
     nickname = models.CharField(max_length=20, verbose_name="nickname")
     birthday = models.DateField(verbose_name="birthday", null=True, blank=True)
@@ -21,7 +22,7 @@ class UserProfile(AbstractUser):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.username
+        return f"{self.username}---{self.email}"
 
 
 class EmailVerityRecord(models.Model):
@@ -34,6 +35,9 @@ class EmailVerityRecord(models.Model):
         verbose_name = "邮箱验证码"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return f"{self.email}---{self.code}"
+
 
 class Banner(models.Model):
     title = models.CharField(max_length=30, verbose_name="标题")
@@ -45,3 +49,6 @@ class Banner(models.Model):
     class Meta:
         verbose_name = "轮播图"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.title

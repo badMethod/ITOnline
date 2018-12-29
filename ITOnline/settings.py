@@ -41,9 +41,16 @@ INSTALLED_APPS = [
     'courses',
     'organization',
     'operation',
+    'captcha',
+    'pure_pagination',
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
+
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -124,4 +132,17 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_FILE
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = '25'
+EMAIL_HOST_USER = 'off5321@163.com'
+EMAIL_HOST_PASSWORD = 'x448738435'
+EMAIL_USE_TLS = False
+EMAIL_FROM = 'off5321@163.com'
+EMAIL_IP = '127.0.0.1'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

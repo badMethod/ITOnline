@@ -1,9 +1,11 @@
 from django.db import models
+from organization.models import CourseOrg
 
 
 # Create your models here.
 
 class Courses(models.Model):
+    courseOrg = models.ForeignKey(CourseOrg, on_delete=models.CASCADE, verbose_name="所属机构", null=True, blank=True)
     name = models.CharField(max_length=30, verbose_name="课程名")
     desc = models.CharField(max_length=200, verbose_name="课程描述")
     detail = models.TextField(verbose_name="课程详情")
@@ -20,6 +22,9 @@ class Courses(models.Model):
         verbose_name = "课程"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
+
 
 class Lesson(models.Model):
     courses = models.ForeignKey(Courses, verbose_name="课程", on_delete=models.CASCADE)
@@ -29,6 +34,9 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "章节"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
 
 class Video(models.Model):
@@ -40,6 +48,9 @@ class Video(models.Model):
         verbose_name = "视频"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
+
 
 class CoursesResource(models.Model):
     courses = models.ForeignKey(Courses, verbose_name="课程", on_delete=models.CASCADE)
@@ -50,3 +61,6 @@ class CoursesResource(models.Model):
     class Meta:
         verbose_name = "课程资源"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
