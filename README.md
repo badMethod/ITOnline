@@ -1,7 +1,7 @@
 # ITOnline
 
 Python3.7 + Django 2.1.4
-
+----------------------------
 用户模块：
 
   1、用户model继承AbstractUser
