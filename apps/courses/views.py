@@ -10,7 +10,7 @@ from .models import Courses
 class CoursesListView(View):
     def get(self, request):
         all_course = Courses.objects.all().order_by("-add_time")
-        hot_couses = Courses.objects.all().order_by("-click_nums")[:3]
+        hot_course = Courses.objects.all().order_by("-click_nums")[:3]
 
         sort = request.GET.get("sort", "")
         if sort:
@@ -29,4 +29,4 @@ class CoursesListView(View):
         p = Paginator(all_course, 6, request=request)
 
         all_course = p.page(page)
-        return render(request, "course-list.html", {"all_course": all_course, "hot_couses": hot_couses, "sort": sort})
+        return render(request, "course-list.html", {"all_course": all_course, "hot_course": hot_course, "sort": sort})
