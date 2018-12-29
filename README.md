@@ -3,9 +3,11 @@
 Python3.7 + Django 2.1.4
 
 用户模块：
-1、用户model继承AbstractUser
-2、Email验证码model
-3、首页轮播图model
+  1、用户model继承AbstractUser
+
+  2、Email验证码model
+
+  3、首页轮播图model
   
 机构模块：
 1、城市model
