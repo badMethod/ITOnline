@@ -1,42 +1,34 @@
-# ITOnline
+# 仿慕课网
 
-Python3.7 + Django 2.1.4
+Python3.7.0 + Django 2.1.4
 ----------------------------
-用户模块：
-
-  1、用户model继承AbstractUser
-
-  2、Email验证码model
-
-  3、首页轮播图model
-  
-机构模块：
-
-  1、城市model
-  
-  2、机构model
-  
-  3、讲师model
-  
-课程模块：
-
-
-操作模块：
-
-
------------------------
-
 功能：
 
-1、用户账号注册、激活、登录、找回密码功能。
+1、用户账号注册、激活、登录、注销、找回密码功能。
 
-  1）、django.forms验证表单
-  
-  2）、django-simple-captcha实现验证码功能
-  
-  3）、django.core.mail.send_mail实现邮件发送功能
-  
-2、课程机构展示
+    django.forms.ModelForm 验证表单
+    django-simple-captcha 实现验证码功能
+    django.core.mail.send_mail 实现邮件发送功能
+2、课程的展示、排序、排名
 
-  1）、django-pure-pagination实现分页功能
-  
+    django-pure-pagination实现分页功能
+    课程详情页收藏按钮的控制，学习了课程的用户头像会被显示，点击学习后ID会被记录
+    相关课程推荐
+    章节详情页面的章节展示，学过该课程的同学学过的其他课程的显示
+    评论的发表和展示
+3、机构的展示、排序、排名
+
+    详情页机构、课程、讲师信息的展示
+    
+3、讲师的展示、排序、排名
+
+4、个人中心和全局搜索
+
+    个人资料的显示和修改
+    学过的课程显示
+    收藏的信息显示
+    全局消息和私人消息的显示
+    全局搜索功能
+    
+    
+
