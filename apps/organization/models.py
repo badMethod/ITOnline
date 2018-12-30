@@ -27,7 +27,6 @@ class CourseOrg(models.Model):
     click_nums = models.IntegerField(default=0, verbose_name="点击数")
     fav_nums = models.IntegerField(default=0, verbose_name="收藏数")
     students = models.IntegerField(default=0, verbose_name="学习人数")
-    course_nums = models.IntegerField(default=0, verbose_name="课程数")
     image = models.ImageField(upload_to="org/%Y/%m", verbose_name="封面图")
     address = models.CharField(max_length=50, verbose_name="机构地址")
     add_time = models.DateTimeField(auto_now_add=True, verbose_name="添加时间")
@@ -38,6 +37,12 @@ class CourseOrg(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_teacher_nums(self):
+        return self.teacher_set.all().count()
+
+    def get_course_nums(self):
+        return self.courses_set.all().count()
 
 
 class Teacher(models.Model):

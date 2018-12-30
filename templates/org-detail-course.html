@@ -48,6 +48,9 @@
                                 </div>
                             </div>
                         </div>
+                        <a href="usercenter-message.html">
+                            <div class="msg-num"> <span id="MsgNum">0</span></div>
+                        </a>
                     {% else %}
                         <a style="color:white" class="fr registerbtn" href="{% url 'register' %}">注册</a>
                         <a style="color:white" class="fr loginbtn" href="{% url 'login' %}">登录</a>
@@ -113,12 +116,12 @@
 		<div class="brief group_list">
             {% for course in all_course %}
                 <div class="module1_5 box">
-                    <a class="comp-img-box" href="course-detail.html">
+                    <a class="comp-img-box" href="{% url 'courses:detail' course.id %}">
 
                         <img width="214" height="195" src="{{ MEDIA_URL }}{{ course.image }}"/>
                     </a>
                     <div class="des">
-                        <a href="course-detail.html"><h2>{{ course.name }}</h2></a>
+                        <a href="{% url 'courses:detail' course.id %}"><h2>{{ course.name }}</h2></a>
                         <span class="fl">课时：<i class="key">{{ course.learn_time }}</i></span>
                         <span class="fr">学习人数：{{ course.students }}</span>
                     </div>

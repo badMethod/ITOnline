@@ -9,7 +9,7 @@ class CityDictAdmin(admin.ModelAdmin):
 
 
 class CourseOrgAdmin(admin.ModelAdmin):
-    list_display = ["cityDict", "name", "courseType", "desc", "students", "course_nums", "click_nums", "fav_nums",
+    list_display = ["cityDict", "name", "courseType", "desc", "students", "click_nums", "fav_nums",
                     "image", "address", "add_time"]
 
 
