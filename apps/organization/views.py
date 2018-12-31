@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 from organization.models import CityDict, CourseOrg, Teacher
 from operation.models import UserFavorite
@@ -15,6 +16,10 @@ class OrgListView(View):
         all_citys = CityDict.objects.all()
         all_orgs = CourseOrg.objects.all()
         hot_org = all_orgs.order_by("-students")[0:3]
+
+        keywords = request.GET.get("keywords", "")
+        if keywords:
+            all_orgs = all_orgs.filter(Q(name__icontains=keywords) | Q(desc__icontains=keywords))
 
         city_id = request.GET.get('city', "")
         courseType = request.GET.get('ct', "")
@@ -60,6 +65,8 @@ class OrgDetailHomeView(View):
     def get(self, request, org_id):
         active = "home"
         courseOrg = CourseOrg.objects.get(id=org_id)
+        courseOrg.click_nums += 1
+        courseOrg.save()
         all_courses = courseOrg.courses_set.all().order_by("-students")[:4]
         all_teachers = courseOrg.teacher_set.all().order_by("-click_nums")[:2]
         has_fav = False
@@ -118,20 +125,20 @@ class UserFavoriteView(View):
             user_favs = UserFavorite.objects.filter(fav_id=fav_id, fav_type=fav_type, user_id=request.user.id)
             if user_favs:
                 user_favs.delete()
-                if fav_type == 1:
-                    course = Courses.objects.get(int(fav_id))
+                if fav_type == "1":
+                    course = Courses.objects.get(id=int(fav_id))
                     course.fav_nums -= 1
                     if course.fav_nums < 0:
                         course.fav_nums = 0
                     course.save()
-                elif fav_type == 2:
-                    courseOrg = CourseOrg.objects.get(int(fav_id))
+                elif fav_type == "2":
+                    courseOrg = CourseOrg.objects.get(id=int(fav_id))
                     courseOrg.fav_nums -= 1
                     if courseOrg.fav_nums < 0:
                         courseOrg.fav_nums = 0
                     courseOrg.save()
-                elif type == 3:
-                    teacher = Teacher.objects.get(int(fav_id))
+                elif fav_type == "3":
+                    teacher = Teacher.objects.get(id=int(fav_id))
                     teacher.fav_nums -= 1
                     if teacher.fav_nums < 0:
                         teacher.fav_nums = 0
@@ -144,16 +151,16 @@ class UserFavoriteView(View):
                     user_fav.fav_type = fav_type
                     user_fav.user = request.user
                     user_fav.save()
-                    if fav_type == 1:
-                        course = Courses.objects.get(int(fav_id))
+                    if fav_type == "1":
+                        course = Courses.objects.get(id=int(fav_id))
                         course.fav_nums += 1
                         course.save()
-                    elif fav_type == 2:
-                        courseOrg = CourseOrg.objects.get(int(fav_id))
+                    elif fav_type == "2":
+                        courseOrg = CourseOrg.objects.get(id=int(fav_id))
                         courseOrg.fav_nums += 1
                         courseOrg.save()
-                    elif type == 3:
-                        teacher = Teacher.objects.get(int(fav_id))
+                    elif fav_type == "3":
+                        teacher = Teacher.objects.get(id=int(fav_id))
                         teacher.fav_nums += 1
                         teacher.save()
                     return HttpResponse('{"status":"success", "msg":"已收藏"}', content_type='application/json')
@@ -161,3 +168,52 @@ class UserFavoriteView(View):
                     return HttpResponse('{"status":"fail", "msg":"收藏出错"}', content_type='application/json')
         else:
             return HttpResponse('{"status":"fail", "msg":"用户未登录"}', content_type='application/json')
+
+
+class TeacherListView(View):
+    def get(self, request):
+        all_teacher = Teacher.objects.all()
+        rank_teacher = all_teacher.order_by("-click_nums")[:5]
+        count = all_teacher.count()
+
+        keywords = request.GET.get("keywords", "")
+        if keywords:
+            all_teacher = all_teacher.filter(
+                Q(name__icontains=keywords) | Q(work_position__icontains=keywords) | Q(points__icontains=keywords))
+
+        sort = request.GET.get("sort", "")
+        if sort:
+            if sort == "hot":
+                all_teacher = all_teacher.order_by("-click_nums")
+
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        # Provide Paginator with the request object for complete querystring generation
+
+        p = Paginator(all_teacher, 2, request=request)
+
+        all_teacher = p.page(page)
+
+        return render(request, "teachers-list.html",
+                      {"all_teacher": all_teacher, "rank_teacher": rank_teacher, "count": count, "sort": sort})
+
+
+class TeacherDetailView(View):
+    def get(self, request, teacher_id):
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher.click_nums += 1
+        teacher.save()
+        courses = teacher.courses_set.all()
+        rank_teacher = Teacher.objects.all().order_by("-click_nums")[:5]
+        has_teacher_fav = False
+        has_org_fav = False
+        if UserFavorite.objects.filter(user=request.user, fav_id=teacher_id, fav_type=3):
+            has_teacher_fav = True
+        if UserFavorite.objects.filter(user=request.user, fav_id=teacher.courseOrg_id, fav_type=2):
+            has_org_fav = True
+        return render(request, "teacher-detail.html",
+                      {"teacher": teacher, "courses": courses, "rank_teacher": rank_teacher,
+                       "has_teacher_fav": has_teacher_fav, "has_org_fav": has_org_fav})

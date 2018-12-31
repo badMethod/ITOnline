@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from django.http import HttpResponse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 from .models import Courses
 from operation.models import UserCourse, UserFavorite, CourseComments
@@ -14,6 +15,11 @@ class CoursesListView(View):
     def get(self, request):
         all_course = Courses.objects.all().order_by("-add_time")
         hot_course = Courses.objects.all().order_by("-click_nums")[:3]
+
+        keywords = request.GET.get("keywords", "")
+        if keywords:
+            all_course = all_course.filter(
+                Q(name__icontains=keywords) | Q(desc__icontains=keywords) | Q(detail__icontains=keywords))
 
         sort = request.GET.get("sort", "")
         if sort:
@@ -38,17 +44,19 @@ class CoursesListView(View):
 class CourseDetailView(View):
 
     def get(self, request, course_id):
+        course = Courses.objects.get(id=course_id)
+        course.click_nums += 1
+        course.save()
         has_fav_course = False
         has_fav_org = False
         if request.user.is_authenticated:
-            user_fav_course = UserFavorite.objects.filter(user=request.user, fav_type=1)
+            user_fav_course = UserFavorite.objects.filter(user=request.user, fav_type=1, fav_id=course_id)
             if user_fav_course:
                 has_fav_course = True
         if request.user.is_authenticated:
-            user_fav_org = UserFavorite.objects.filter(user=request.user, fav_type=2)
+            user_fav_org = UserFavorite.objects.filter(user=request.user, fav_type=2, fav_id=course.courseOrg_id)
             if user_fav_org:
                 has_fav_org = True
-        course = Courses.objects.get(id=course_id)
         relate_course = Courses.objects.filter(tag=course.tag).exclude(id=course_id).order_by("-click_nums")[:1]
         user_course = UserCourse.objects.filter(course_id=course_id)
         return render(request, "course-detail.html",
@@ -62,7 +70,7 @@ class LessonDetailView(LoginRequiredMixin, View):
 
     def get(self, request, course_id):
         course = Courses.objects.get(id=course_id)
-        course.click_nums += 1
+        course.students += 1
         course.save()
         user_course = UserCourse.objects.filter(user=request.user, course=course)
         if not user_course:

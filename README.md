@@ -6,6 +6,7 @@ Python3.7.0 + Django 2.1.4
 
 1、用户账号注册、激活、登录、注销、找回密码功能。
 
+    ModelBackend和authenticate、login、logout实现登录注销
     django.forms.ModelForm 验证表单
     django-simple-captcha 实现验证码功能
     django.core.mail.send_mail 实现邮件发送功能
@@ -22,13 +23,22 @@ Python3.7.0 + Django 2.1.4
     
 3、讲师的展示、排序、排名
 
+    详情页讲师、课程、机构信息的展示
 4、个人中心和全局搜索
 
     个人资料的显示和修改
+    更换头像
+    发送邮件验证码更改邮箱
     学过的课程显示
     收藏的信息显示
-    全局消息和私人消息的显示
+    全局消息的显示
     全局搜索功能
+    
+5、全局404、500的设置
+
+6、防范sql注入、xss攻击和csrf攻击
+
+7、在Linux上使用Nginx部署
     
     
 

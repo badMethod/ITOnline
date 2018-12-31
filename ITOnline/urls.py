@@ -18,13 +18,16 @@ from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 from django.views.static import serve
 
-from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, LinkResetUserView, ResetUserView
-from ITOnline.settings import MEDIA_ROOT
+from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, LinkResetUserView, ResetUserView, \
+    LogoutView, IndexView
+from ITOnline.settings import MEDIA_ROOT, STATIC_ROOT
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name="index.html"), name="index"),
+    # path('', TemplateView.as_view(template_name="index.html"), name="index"),
+    path('', IndexView.as_view(), name="index"),
     path('login/', LoginView.as_view(), name="login"),
+    path('logout/', LogoutView.as_view(), name="logout"),
     path('register/', RegisterView.as_view(), name="register"),
     re_path(r'^captcha/', include('captcha.urls')),
     re_path(r'^active/(?P<email_code>.*)/$', ActiveUserView.as_view(), name="active_user"),
@@ -33,6 +36,8 @@ urlpatterns = [
     path('forgetpwd/', ForgetPwdView.as_view(), name="forgetpwd"),
     re_path('media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
 
-    path("org/", include(('organization.urls', 'org'), namespace='org')),
-    path("courses/", include(("courses.urls", "courses"), namespace="courses"))
+    path("org/", include('organization.urls', namespace='org')),
+    path("courses/", include("courses.urls", namespace="courses")),
+    path("user_cent/", include("users.urls", namespace="user_cent")),
+    re_path('static/(?P<path>.*)', serve, {"document_root": STATIC_ROOT}),
 ]

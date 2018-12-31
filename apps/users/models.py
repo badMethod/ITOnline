@@ -24,11 +24,16 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return f"{self.username}---{self.email}"
 
+    def get_unread_message(self):
+        from operation.models import UserMessage
+        return UserMessage.objects.filter(user=self.id, has_read=False).count()
+
 
 class EmailVerityRecord(models.Model):
     code = models.CharField(max_length=20, verbose_name="验证码")
     email = models.EmailField(max_length=30, verbose_name="邮箱")
-    send_type = models.CharField(choices=(("register", "注册"), ("forget", "找回账号")), default="register", max_length=30)
+    send_type = models.CharField(choices=(("register", "注册"), ("forget", "找回账号"), ("change", "修改邮箱")),
+                                 default="register", max_length=30)
     send_time = models.DateTimeField(default=datetime.now, verbose_name="发送时间")
 
     class Meta:

@@ -6,7 +6,10 @@ from random import Random
 
 def send_register_email(email, send_type="register"):
     email_register = EmailVerityRecord()
-    code = random_str(16)
+    if send_type == "change":
+        code = random_str(4)
+    else:
+        code = random_str(16)
     email_register.email = email
     email_register.code = code
     email_register.send_type = send_type
@@ -21,6 +24,10 @@ def send_register_email(email, send_type="register"):
     if send_type == "forget":
         email_title = "欢迎小老弟找回密码"
         email_body = f"找回密码请复制下面用链接浏览器打开http://{EMAIL_IP}:8000/reset/{code}"
+        send_mail(email_title, email_body, EMAIL_FROM, [email])
+    if send_type == "change":
+        email_title = "欢迎小老弟更换邮箱"
+        email_body = f"这是你的验证码{code}"
         send_mail(email_title, email_body, EMAIL_FROM, [email])
 
 

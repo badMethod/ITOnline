@@ -56,6 +56,7 @@ class Teacher(models.Model):
     fav_nums = models.IntegerField(default=0, verbose_name="收藏数")
     add_time = models.DateTimeField(auto_now_add=True, verbose_name="添加时间")
     image = models.ImageField(upload_to="org/%Y/%m", verbose_name="头像", default="")
+    age = models.PositiveIntegerField(default=25, verbose_name="年龄")
 
     class Meta:
         verbose_name = "任课老师"
@@ -63,3 +64,6 @@ class Teacher(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_course_nums(self):
+        return self.courses_set.all().count()

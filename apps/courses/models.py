@@ -12,6 +12,7 @@ class Courses(models.Model):
     detail = models.TextField(verbose_name="课程详情")
     level = models.CharField(max_length=10, choices=(("easy", "初级"), ("normal", "中级"), ("hard", "高级")),
                              verbose_name="课程等级")
+    is_banner = models.BooleanField(default=False, verbose_name="是否轮播")
     learn_time = models.IntegerField(default=0, verbose_name="学习时长（min）")
     students = models.IntegerField(default=0, verbose_name="学习人数")
     fav_nums = models.IntegerField(default=0, verbose_name="收藏人数")
