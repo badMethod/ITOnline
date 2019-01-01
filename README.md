@@ -35,10 +35,3 @@ Python3.7.0 + Django 2.1.4
     全局搜索功能
     
 5、全局404、500的设置
-
-6、防范sql注入、xss攻击和csrf攻击
-
-7、在Linux上使用Nginx部署
-    
-    
-
