@@ -121,7 +121,7 @@
                                 </a>
                             </dt>
                             <dd>
-                                <h1><a href="org-detail-homepage.html">{{ org.name }}</a></h1>
+                                <h1><a href="{% url 'org:detail_home' org.id %}">{{ org.name }}</a></h1>
                                 <div class="pic fl" style="width:auto;">
 
                                     <img src="/static/images/authentication.png"/>
