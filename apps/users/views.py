@@ -78,7 +78,7 @@ class RegisterView(View):
         if register_form.is_valid():
             email = request.POST.get("email", "")
             password = request.POST.get("password", "")
-            if UserProfile.objects.get(email=email):
+            if UserProfile.objects.filter(email=email):
                 return render(request, "register.html", {"register_form": register_form, "message": "账号已存在"})
             user = UserProfile()
             user.username = email
@@ -86,14 +86,14 @@ class RegisterView(View):
             user.email = email
             user.password = make_password(password)
             user.is_active = False
-            user.save()
-            send_register_email(email, "register")
             message = UserMessage()
-            message.user = request.user.id
+            user.save()
+            message.user = user.id
             message.message = "欢迎注册慕课网！"
             message.has_read = False
             message.save()
-            return render(request, "login.html")
+            send_register_email(email, "register")
+            return render(request, "login.html", {"register_form": register_form, "message": "激活邮件已发送，请查收"})
         else:
             return render(request, "register.html", {"register_form": register_form})
 
@@ -125,11 +125,11 @@ class ForgetPwdView(View):
             email = request.POST.get("email", "")
             user = UserProfile.objects.filter(email=email)
             if user:
-                send_register_email(email, "forget")
                 message = UserMessage()
-                message.user = request.user.id
+                message.user = user[0].id
                 message.message = "您正在找回账号，如果是本人操作请忽略！"
                 message.has_read = False
+                send_register_email(email, "forget")
                 message.save()
                 return render(request, "forgetpwd.html", {"message": "找回邮件已发送，请查看邮箱", "forgetpwd_form": forgetpwd_form})
             else:
@@ -191,7 +191,7 @@ class UserCentInfoView(LoginRequiredMixin, View):
             info_form.save()
             return HttpResponse('{"status":"success"}', content_type="application/json")
         else:
-            return HttpResponse('{"status":"fail","msg":"请重新检查重新检查重新检查重新检查重新检查重新检查重新检查重新检查重新检查"}',
+            return HttpResponse('{"status":"fail","msg":"请重新检查重新检查重新检查重新检查手机格式是否正确"}',
                                 content_type="application/json")
 
 
