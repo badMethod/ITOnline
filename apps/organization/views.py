@@ -33,7 +33,7 @@ class OrgListView(View):
             if sort == "students":
                 all_orgs = all_orgs.order_by("-students")
             elif sort == "courses":
-                all_orgs = all_orgs.order_by("-course_nums")
+                all_orgs = all_orgs.order_by("-fav_nums")
         try:
             page = request.GET.get('page', 1)
         except PageNotAnInteger:

@@ -87,12 +87,12 @@ class RegisterView(View):
             user.password = make_password(password)
             user.is_active = False
             message = UserMessage()
+            send_register_email(email, "register")
             user.save()
             message.user = user.id
             message.message = "欢迎注册慕课网！"
             message.has_read = False
             message.save()
-            send_register_email(email, "register")
             return render(request, "login.html", {"register_form": register_form, "message": "激活邮件已发送，请查收"})
         else:
             return render(request, "register.html", {"register_form": register_form})
