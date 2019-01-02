@@ -5,6 +5,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
 from .models import Courses
+from organization.models import CourseOrg
 from operation.models import UserCourse, UserFavorite, CourseComments
 from utils.mixin import LoginRequiredMixin
 
@@ -72,6 +73,9 @@ class LessonDetailView(LoginRequiredMixin, View):
         course = Courses.objects.get(id=course_id)
         course.students += 1
         course.save()
+        org = course.courseOrg
+        org.students += 1
+        org.save()
         user_course = UserCourse.objects.filter(user=request.user, course=course)
         if not user_course:
             user_course = UserCourse()
